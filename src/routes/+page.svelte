@@ -65,6 +65,10 @@
 
     loader.load().then(async () => {
       const { Map } = (await google.maps.importLibrary('maps')) as google.maps.MapsLibrary;
+      const { AdvancedMarkerElement } = (await google.maps.importLibrary(
+        'marker'
+      )) as google.maps.MarkerLibrary;
+
       const map = new Map(document.getElementById('map') as HTMLElement, {
         center: { lat: 14.5964947, lng: 120.9883602 },
         zoom: 12,
@@ -77,35 +81,50 @@
 
       for (const city of Object.keys(cities)) {
         if (cities[city].position.lat !== 0) {
-          new google.maps.Marker({
+          // new google.maps.Marker({
+          //   position: cities[city].position,
+          //   map,
+          //   icon: {
+          //     path: google.maps.SymbolPath.CIRCLE,
+          //     scale: 0
+          //   },
+          //   draggable: false,
+          //   label: { text: `${cities[city].name}`, color: 'white', fontWeight: 'bold' }
+          // });
+
+          // const valuePosition = {
+          //   lat: cities[city].position.lat - 0.005,
+          //   lng: cities[city].position.lng
+          // };
+
+          // new google.maps.Marker({
+          //   position: valuePosition,
+          //   map,
+          //   icon: {
+          //     path: google.maps.SymbolPath.CIRCLE,
+          //     scale: 0
+          //   },
+          //   draggable: false,
+          //   label: {
+          //     text: `${formatAmountToCurrency(cities[city].value, '₱')} /sq. m.`,
+          //     color: 'white',
+          //     fontWeight: 'bold'
+          //   }
+          // });
+
+          const priceTag = document.createElement('div');
+          priceTag.className = 'bg-zinc-900 p-2 rounded-lg font-bold text-white text-center';
+          priceTag.innerHTML = `<h1 class="text-md">${
+            cities[city].name
+          }</h1><p class="text-lg font-extrabold">${formatAmountToCurrency(
+            cities[city].value,
+            '₱'
+          )} <span class="text-sm">per sqm</span></p>`;
+
+          const marker = new AdvancedMarkerElement({
+            map,
             position: cities[city].position,
-            map,
-            icon: {
-              path: google.maps.SymbolPath.CIRCLE,
-              scale: 0
-            },
-            draggable: false,
-            label: { text: `${cities[city].name}`, color: 'white', fontWeight: 'bold' }
-          });
-
-          const valuePosition = {
-            lat: cities[city].position.lat - 0.005,
-            lng: cities[city].position.lng
-          };
-
-          new google.maps.Marker({
-            position: valuePosition,
-            map,
-            icon: {
-              path: google.maps.SymbolPath.CIRCLE,
-              scale: 0
-            },
-            draggable: false,
-            label: {
-              text: `${formatAmountToCurrency(cities[city].value, '₱')} /sq. m.`,
-              color: 'white',
-              fontWeight: 'bold'
-            }
+            content: priceTag
           });
         }
       }
