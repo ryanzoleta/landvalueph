@@ -10,6 +10,9 @@
   const { barangays, cities, MAPS_API_KEY, MAP_ID, BARANGAYS_DATASET_ID } = data;
 
   onMount(() => {
+    let map;
+    let allMarkers = [];
+
     const loader = new Loader({
       apiKey: MAPS_API_KEY,
       version: 'beta'
@@ -40,8 +43,6 @@
 
         let value;
 
-        console.log('Processing', datasetFeature.datasetAttributes['ADM4_EN']);
-
         try {
           if (adminLevel2 === 'NCR, CITY OF MANILA, FIRST DISTRICT (Not a Province)') {
             value = barangays[datasetFeature.datasetAttributes['ADM3_PCODE']].color;
@@ -50,13 +51,15 @@
           }
 
           return {
-            strokeWeight: 3.0,
+            strokeColor: 'black',
+            strokeWeight: 1.0,
             fillColor: value,
             fillOpacity: 0.3
           };
         } catch {
           return {
-            strokeWeight: 3.0,
+            strokeColor: 'black',
+            strokeWeight: 1.0,
             fillColor: 'gray',
             fillOpacity: 0.3
           };
@@ -82,13 +85,43 @@
       return element;
     }
 
+    async function handleClick(e) {
+      const { AdvancedMarkerElement } = (await google.maps.importLibrary(
+        'marker'
+      )) as google.maps.MarkerLibrary;
+      const datasetFeature = e.features[0];
+      const adminLevel2 = datasetFeature.datasetAttributes['ADM2_EN'];
+
+      let idValue;
+
+      if (adminLevel2 === 'NCR, CITY OF MANILA, FIRST DISTRICT (Not a Province)') {
+        idValue = datasetFeature.datasetAttributes['ADM3_PCODE'];
+      } else {
+        idValue = datasetFeature.datasetAttributes['ADM4_PCODE'];
+      }
+
+      for (let i = 0; i < allMarkers.length; i++) {
+        allMarkers[i].setMap(null);
+      }
+
+      const marker = new AdvancedMarkerElement({
+        map,
+        position: barangays[idValue].position,
+        content: buildElement(barangays[idValue].name, barangays[idValue].value)
+      });
+
+      allMarkers.push(marker);
+
+      console.log(barangays[idValue].position);
+    }
+
     loader.load().then(async () => {
       const { Map } = (await google.maps.importLibrary('maps')) as google.maps.MapsLibrary;
       const { AdvancedMarkerElement } = (await google.maps.importLibrary(
         'marker'
       )) as google.maps.MarkerLibrary;
 
-      const map = new Map(document.getElementById('map') as HTMLElement, {
+      map = new Map(document.getElementById('map') as HTMLElement, {
         center: { lat: 14.5964947, lng: 120.9883602 },
         zoom: 12,
         maxZoom: 15,
@@ -100,28 +133,29 @@
 
       const datasetLayer = map.getDatasetFeatureLayer(BARANGAYS_DATASET_ID);
       datasetLayer.style = setStyle;
+      datasetLayer.addListener('click', handleClick);
 
-      if (currentLevel === 'city') {
-        for (const city of Object.keys(cities)) {
-          if (cities[city].position.lat !== 0) {
-            const marker = new AdvancedMarkerElement({
-              map,
-              position: cities[city].position,
-              content: buildElement(cities[city].name, cities[city].value)
-            });
-          }
-        }
-      } else {
-        for (const brgy of Object.keys(barangays)) {
-          if (barangays[brgy].position.lat !== 0) {
-            const marker = new AdvancedMarkerElement({
-              map,
-              position: barangays[brgy].position,
-              content: buildElement(barangays[brgy].name, barangays[brgy].value)
-            });
-          }
-        }
-      }
+      // if (currentLevel === 'city') {
+      //   for (const city of Object.keys(cities)) {
+      //     if (cities[city].position.lat !== 0) {
+      //       const marker = new AdvancedMarkerElement({
+      //         map,
+      //         position: cities[city].position,
+      //         content: buildElement(cities[city].name, cities[city].value)
+      //       });
+      //     }
+      //   }
+      // } else {
+      //   for (const brgy of Object.keys(barangays)) {
+      //     if (barangays[brgy].position.lat !== 0) {
+      //       const marker = new AdvancedMarkerElement({
+      //         map,
+      //         position: barangays[brgy].position,
+      //         content: buildElement(barangays[brgy].name, barangays[brgy].value)
+      //       });
+      //     }
+      //   }
+      // }
     });
   });
 </script>
