@@ -3,11 +3,11 @@
   import { Loader } from '@googlemaps/js-api-loader';
   import { onMount } from 'svelte';
 
-  let currentLevel: 'city' | 'district' = 'city';
+  let currentLevel: 'city' | 'district' = 'district';
 
   export let data;
 
-  const { cities, MAPS_API_KEY, MAP_ID, BARANGAYS_DATASET_ID } = data;
+  const { barangays, cities, MAPS_API_KEY, MAP_ID, BARANGAYS_DATASET_ID } = data;
 
   onMount(() => {
     const loader = new Loader({
@@ -38,29 +38,48 @@
       } else if (currentLevel === 'district') {
         const adminLevel2 = datasetFeature.datasetAttributes['ADM2_EN'];
 
-        // const rawDistrict = datasetFeature.datasetAttributes['ADM4_EN'];
-        let rawDistrict;
-
         let value;
 
-        if (adminLevel2 === 'NCR, CITY OF MANILA, FIRST DISTRICT (Not a Province)') {
-          rawDistrict = datasetFeature.datasetAttributes['ADM3_EN'] as string;
-        } else {
-          rawDistrict = datasetFeature.datasetAttributes['ADM4_EN'] as string;
-        }
+        console.log('Processing', datasetFeature.datasetAttributes['ADM4_EN']);
 
-        if (Object.keys(masterDataDistrict).includes(rawDistrict)) {
-          value = masterDataDistrict[rawDistrict];
-        } else {
-          masterDataDistrict[rawDistrict] = Math.random() < 0.5 ? 'green' : 'red';
-        }
+        try {
+          if (adminLevel2 === 'NCR, CITY OF MANILA, FIRST DISTRICT (Not a Province)') {
+            value = barangays[datasetFeature.datasetAttributes['ADM3_EN']].color;
+          } else {
+            value = barangays[datasetFeature.datasetAttributes['ADM4_EN']].color;
+          }
 
-        return {
-          strokeWeight: 3.0,
-          fillColor: value,
-          fillOpacity: 0.3
-        };
+          return {
+            strokeWeight: 3.0,
+            fillColor: value,
+            fillOpacity: 0.3
+          };
+        } catch {
+          return {
+            strokeWeight: 3.0,
+            fillColor: 'gray',
+            fillOpacity: 0.3
+          };
+        }
       }
+    }
+
+    function buildElement(name, value) {
+      const element = document.createElement('div');
+      element.className = 'bg-zinc-900 p-2 rounded-lg font-bold text-white text-center';
+
+      let innerHTML = `<h1 class="text-md">${name}</h1>`;
+
+      if (value) {
+        innerHTML += `<p class="text-lg font-extrabold">${formatAmountToCurrency(
+          value,
+          '₱'
+        )} <span class="text-sm">per sqm</span></p>`;
+      }
+
+      element.innerHTML = innerHTML;
+
+      return element;
     }
 
     loader.load().then(async () => {
@@ -82,53 +101,25 @@
       const datasetLayer = map.getDatasetFeatureLayer(BARANGAYS_DATASET_ID);
       datasetLayer.style = setStyle;
 
-      for (const city of Object.keys(cities)) {
-        if (cities[city].position.lat !== 0) {
-          // new google.maps.Marker({
-          //   position: cities[city].position,
-          //   map,
-          //   icon: {
-          //     path: google.maps.SymbolPath.CIRCLE,
-          //     scale: 0
-          //   },
-          //   draggable: false,
-          //   label: { text: `${cities[city].name}`, color: 'white', fontWeight: 'bold' }
-          // });
-
-          // const valuePosition = {
-          //   lat: cities[city].position.lat - 0.005,
-          //   lng: cities[city].position.lng
-          // };
-
-          // new google.maps.Marker({
-          //   position: valuePosition,
-          //   map,
-          //   icon: {
-          //     path: google.maps.SymbolPath.CIRCLE,
-          //     scale: 0
-          //   },
-          //   draggable: false,
-          //   label: {
-          //     text: `${formatAmountToCurrency(cities[city].value, '₱')} /sq. m.`,
-          //     color: 'white',
-          //     fontWeight: 'bold'
-          //   }
-          // });
-
-          const priceTag = document.createElement('div');
-          priceTag.className = 'bg-zinc-900 p-2 rounded-lg font-bold text-white text-center';
-          priceTag.innerHTML = `<h1 class="text-md">${
-            cities[city].name
-          }</h1><p class="text-lg font-extrabold">${formatAmountToCurrency(
-            cities[city].value,
-            '₱'
-          )} <span class="text-sm">per sqm</span></p>`;
-
-          const marker = new AdvancedMarkerElement({
-            map,
-            position: cities[city].position,
-            content: priceTag
-          });
+      if (currentLevel === 'city') {
+        for (const city of Object.keys(cities)) {
+          if (cities[city].position.lat !== 0) {
+            const marker = new AdvancedMarkerElement({
+              map,
+              position: cities[city].position,
+              content: buildElement(cities[city].name, cities[city].value)
+            });
+          }
+        }
+      } else {
+        for (const brgy of Object.keys(barangays)) {
+          if (barangays[brgy].position.lat !== 0) {
+            const marker = new AdvancedMarkerElement({
+              map,
+              position: barangays[brgy].position,
+              content: buildElement(barangays[brgy].name, barangays[brgy].value)
+            });
+          }
         }
       }
     });
