@@ -1,0 +1,120 @@
+{
+  "CITY OF MANILA": {
+    "name": "Manila",
+    "value": 219000,
+    "position": { "lat": 14.5964947, "lng": 120.9883602 },
+    "color": "#fda4af",
+    "level": 3
+  },
+  "CALOOCAN CITY": {
+    "name": "Caloocan",
+    "value": 64200,
+    "position": { "lat": 0, "lng": 0 },
+    "color": "#14532d",
+    "level": 0
+  },
+  "CITY OF LAS PI\u00d1AS": {
+    "name": "Las Pi\u00f1as",
+    "value": 87500,
+    "position": { "lat": 14.444551, "lng": 120.993859 },
+    "color": "#14532d",
+    "level": 0
+  },
+  "CITY OF MAKATI": {
+    "name": "Makati",
+    "value": 317000,
+    "position": { "lat": 14.55469, "lng": 121.024323 },
+    "color": "#881337",
+    "level": 5
+  },
+  "CITY OF MALABON": {
+    "name": "Malabon",
+    "value": 104000,
+    "position": { "lat": 14.668112, "lng": 120.965782 },
+    "color": "#16a34a",
+    "level": 1
+  },
+  "CITY OF MANDALUYONG": {
+    "name": "Mandaluyong",
+    "value": 294000,
+    "position": { "lat": 14.579468, "lng": 121.035943 },
+    "color": "#e11d48",
+    "level": 4
+  },
+  "CITY OF MARIKINA": {
+    "name": "Marikina",
+    "value": 77500,
+    "position": { "lat": 14.650766, "lng": 121.102913 },
+    "color": "#14532d",
+    "level": 0
+  },
+  "CITY OF MUNTINLUPA": {
+    "name": "Muntinlupa",
+    "value": 101000,
+    "position": { "lat": 14.407933, "lng": 121.041441 },
+    "color": "#14532d",
+    "level": 0
+  },
+  "CITY OF NAVOTAS": {
+    "name": "Navotas",
+    "value": 0,
+    "position": { "lat": 14.673315, "lng": 120.934692 },
+    "color": "GREEN"
+  },
+  "CITY OF PARA\u00d1AQUE": {
+    "name": "Para\u00f1aque",
+    "value": 97700,
+    "position": { "lat": 14.479315, "lng": 121.01964 },
+    "color": "#14532d",
+    "level": 0
+  },
+  "CITY OF PASIG": {
+    "name": "Pasig",
+    "value": 121000,
+    "position": { "lat": 14.576283, "lng": 121.085078 },
+    "color": "#16a34a",
+    "level": 1
+  },
+  "CITY OF SAN JUAN": {
+    "name": "San Juan",
+    "value": 345000,
+    "position": { "lat": 14.601972, "lng": 121.035485 },
+    "color": "#881337",
+    "level": 5
+  },
+  "CITY OF VALENZUELA": {
+    "name": "Valenzuela",
+    "value": 59200,
+    "position": { "lat": 0, "lng": 0 },
+    "color": "#14532d",
+    "level": 0
+  },
+  "PASAY CITY": {
+    "name": "Pasay",
+    "value": 122000,
+    "position": { "lat": 14.537701, "lng": 121.000859 },
+    "color": "#16a34a",
+    "level": 1
+  },
+  "PATEROS": {
+    "name": "Pateros",
+    "value": 55200,
+    "position": { "lat": 14.545413, "lng": 121.068684 },
+    "color": "#14532d",
+    "level": 0
+  },
+  "QUEZON CITY": {
+    "name": "Quezon City",
+    "value": 128000,
+    "position": { "lat": 14.676137, "lng": 121.043606 },
+    "color": "#16a34a",
+    "level": 1
+  },
+  "TAGUIG CITY": {
+    "name": "Taguig",
+    "value": 234000,
+    "position": { "lat": 14.518043, "lng": 121.050857 },
+    "color": "#fda4af",
+    "level": 3
+  }
+}
