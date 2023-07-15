@@ -72,8 +72,11 @@
       const map = new Map(document.getElementById('map') as HTMLElement, {
         center: { lat: 14.5964947, lng: 120.9883602 },
         zoom: 12,
+        maxZoom: 15,
+        minZoom: 11,
         mapId: MAP_ID,
-        mapTypeControl: false
+        mapTypeControl: false,
+        disableDefaultUI: true
       });
 
       const datasetLayer = map.getDatasetFeatureLayer(BARANGAYS_DATASET_ID);
