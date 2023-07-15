@@ -1,6 +1,6 @@
 import { env } from '$env/dynamic/private';
 import cities from '$lib/data/cities.json';
-import barangays from '$lib/data/barangays.json';
+import barangays from '$lib/data/barangays_with_values.json';
 
 export async function load() {
   return {

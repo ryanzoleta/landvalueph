@@ -44,9 +44,9 @@
 
         try {
           if (adminLevel2 === 'NCR, CITY OF MANILA, FIRST DISTRICT (Not a Province)') {
-            value = barangays[datasetFeature.datasetAttributes['ADM3_EN']].color;
+            value = barangays[datasetFeature.datasetAttributes['ADM3_PCODE']].color;
           } else {
-            value = barangays[datasetFeature.datasetAttributes['ADM4_EN']].color;
+            value = barangays[datasetFeature.datasetAttributes['ADM4_PCODE']].color;
           }
 
           return {
