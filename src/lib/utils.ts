@@ -10,3 +10,17 @@ export function formatAmountToCurrency(amount: number, currencySymbol?: string):
   }
   return `${currencyNumber}`;
 }
+
+export function formatCurrency(number) {
+  if (isNaN(number)) {
+    return 'Invalid Number';
+  }
+
+  if (number >= 1000000) {
+    return '₱' + (number / 1000000).toFixed(0) + 'M';
+  } else if (number >= 1000) {
+    return '₱' + (number / 1000).toFixed(0) + 'K';
+  } else {
+    return '₱' + number.toFixed(0);
+  }
+}

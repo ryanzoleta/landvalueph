@@ -35,10 +35,24 @@ import json
 import numpy as np
 import csv
 
-COLOR_MAP = ["#14532d", "#16a34a", "#86efac", "#fda4af", "#e11d48", "#881337"]
+COLOR_MAP = [
+    "#052e16",
+    "#166534",
+    "#16a34a",
+    "#4ade80",
+    "#bbf7d0",
+    "#fecaca",
+    "#f87171",
+    "#dc2626",
+    "#991b1b",
+    "#450a0a",
+]
 
 
 def get_segment_level(value, ranges):
+    if value > ranges[-1]:
+        return len(ranges) - 2
+
     for i in range(len(ranges) - 1):
         if ranges[i] <= value <= ranges[i + 1]:
             return i
@@ -54,7 +68,7 @@ with open("src/lib/data/barangays_values.csv", mode="r") as csv_file:
     csv_reader = csv.DictReader(csv_file)
     line_count = 0
     for row in csv_reader:
-        brgy_data[row["id"]]["value"] = float(row["value"]) if row["value"] != "" else 0
+        brgy_data[row["id"]]["value"] = float(row["price"]) if row["price"] != "" else 0
 
 
 ######### SEGMENTATION #########
@@ -62,10 +76,10 @@ with open("src/lib/data/barangays_values.csv", mode="r") as csv_file:
 all_values = []
 
 for brgy_id in brgy_data.keys():
-    if brgy_data[brgy_id]["value"] != 0:
+    if brgy_data[brgy_id]["value"] != 0 and brgy_data[brgy_id]["value"] <= 100000000:
         all_values.append(brgy_data[brgy_id]["value"])
 
-num_segments = 6
+num_segments = 10
 
 min_val = min(all_values)
 max_val = max(all_values)

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { formatAmountToCurrency } from '$lib/utils.js';
+  import { formatAmountToCurrency, formatCurrency } from '$lib/utils.js';
   import { Loader } from '@googlemaps/js-api-loader';
   import { onMount } from 'svelte';
 
@@ -74,10 +74,9 @@
       let innerHTML = `<h1 class="text-md">${name}</h1>`;
 
       if (value) {
-        innerHTML += `<p class="text-lg font-extrabold">${formatAmountToCurrency(
-          value,
-          '₱'
-        )} <span class="text-sm">per sqm</span></p>`;
+        innerHTML += `<p class="text-lg font-extrabold">${formatCurrency(
+          value
+        )} <span class="text-xs">avg price</span></p>`;
       }
 
       element.innerHTML = innerHTML;
