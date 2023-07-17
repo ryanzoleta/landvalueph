@@ -48,6 +48,9 @@ COLOR_MAP = [
     "#450a0a",
 ]
 
+# NOT FINAL, GET ALL THE DATA FIRST THEN FIGURE OUT IDEAL THRESHOLD
+HIGH_THRESHOLD = 60000000
+
 
 def get_segment_level(value, ranges):
     if value > ranges[-1]:
@@ -68,7 +71,8 @@ with open("src/lib/data/barangays_values.csv", mode="r") as csv_file:
     csv_reader = csv.DictReader(csv_file)
     line_count = 0
     for row in csv_reader:
-        brgy_data[row["id"]]["value"] = float(row["price"]) if row["price"] != "" else 0
+        # brgy_data[row["id"]]["value"] = float(row["price"]) if row["price"] != "" else 0
+        brgy_data[row["id"]]["value"] = float(row["value"]) if row["value"] != "" else 0
 
 
 ######### SEGMENTATION #########
@@ -76,7 +80,10 @@ with open("src/lib/data/barangays_values.csv", mode="r") as csv_file:
 all_values = []
 
 for brgy_id in brgy_data.keys():
-    if brgy_data[brgy_id]["value"] != 0 and brgy_data[brgy_id]["value"] <= 100000000:
+    if (
+        brgy_data[brgy_id]["value"] != 0
+        and brgy_data[brgy_id]["value"] <= HIGH_THRESHOLD
+    ):
         all_values.append(brgy_data[brgy_id]["value"])
 
 num_segments = 10

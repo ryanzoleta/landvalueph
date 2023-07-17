@@ -51,14 +51,14 @@
           }
 
           return {
-            strokeColor: 'black',
+            // strokeColor: 'black',
             strokeWeight: 1.0,
             fillColor: value,
             fillOpacity: 0.3
           };
         } catch {
           return {
-            strokeColor: 'black',
+            // strokeColor: 'black',
             strokeWeight: 1.0,
             fillColor: 'gray',
             fillOpacity: 0.3
