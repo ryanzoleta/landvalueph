@@ -1,20 +1,20 @@
 <script lang="ts">
-  import { formatAmountToCurrency, formatCurrency } from '$lib/utils.js';
+  import { formatCurrency } from '$lib/utils.js';
   import { Loader } from '@googlemaps/js-api-loader';
   import { onMount } from 'svelte';
 
   let currentLevel: 'city' | 'district' = 'district';
+  let selectedLocality = '';
 
   export let data;
 
-  const { barangays, cities, MAPS_API_KEY, MAP_ID, BARANGAYS_DATASET_ID } = data;
-
   onMount(() => {
-    let map;
-    let allMarkers = [];
+    //@ts-ignore
+    let map: google.maps.MapsLibrary;
+    let allMarkers: any[] = [];
 
     const loader = new Loader({
-      apiKey: MAPS_API_KEY,
+      apiKey: data.MAPS_API_KEY,
       version: 'beta'
     });
 
@@ -27,10 +27,10 @@
         let value;
 
         if (adminLevel2 === 'NCR, CITY OF MANILA, FIRST DISTRICT (Not a Province)') {
-          value = cities['CITY OF MANILA'].color;
+          value = data.cities['CITY OF MANILA'].color;
         } else {
           const city = datasetFeature.datasetAttributes['ADM3_EN'] as string;
-          value = cities[city].color;
+          value = data.cities[city].color;
         }
 
         return {
@@ -39,21 +39,22 @@
           fillOpacity: 0.3
         };
       } else if (currentLevel === 'district') {
-        const adminLevel2 = datasetFeature.datasetAttributes['ADM2_EN'];
-
-        let value;
+        let localityId = '';
 
         try {
-          if (adminLevel2 === 'NCR, CITY OF MANILA, FIRST DISTRICT (Not a Province)') {
-            value = barangays[datasetFeature.datasetAttributes['ADM3_PCODE']].color;
+          if (
+            datasetFeature.datasetAttributes['ADM2_EN'] ===
+            'NCR, CITY OF MANILA, FIRST DISTRICT (Not a Province)'
+          ) {
+            localityId = datasetFeature.datasetAttributes['ADM3_PCODE'];
           } else {
-            value = barangays[datasetFeature.datasetAttributes['ADM4_PCODE']].color;
+            localityId = datasetFeature.datasetAttributes['ADM4_PCODE'];
           }
 
           return {
-            // strokeColor: 'black',
-            strokeWeight: 1.0,
-            fillColor: value,
+            strokeColor: selectedLocality === localityId ? 'black' : undefined,
+            strokeWeight: 3.0,
+            fillColor: data.barangays[localityId].color,
             fillOpacity: 0.3
           };
         } catch {
@@ -67,7 +68,7 @@
       }
     }
 
-    function buildElement(name, value) {
+    function buildElement(name: string, value: number) {
       const element = document.createElement('div');
       element.className = 'bg-zinc-900 p-2 rounded-lg font-bold text-white text-center';
 
@@ -85,8 +86,10 @@
     }
 
     async function handleClick(e) {
+      //@ts-ignore
       const { AdvancedMarkerElement } = (await google.maps.importLibrary(
         'marker'
+        //@ts-ignore
       )) as google.maps.MarkerLibrary;
       const datasetFeature = e.features[0];
       const adminLevel2 = datasetFeature.datasetAttributes['ADM2_EN'];
@@ -105,32 +108,32 @@
 
       const marker = new AdvancedMarkerElement({
         map,
-        position: barangays[idValue].position,
-        content: buildElement(barangays[idValue].name, barangays[idValue].value)
+        position: data.barangays[idValue].position,
+        content: buildElement(data.barangays[idValue].name, data.barangays[idValue].value)
       });
 
       allMarkers.push(marker);
 
-      console.log(barangays[idValue].position);
+      const datasetLayer = map.getDatasetFeatureLayer(data.BARANGAYS_DATASET_ID);
+      selectedLocality = idValue;
+      datasetLayer.style = setStyle;
     }
 
     loader.load().then(async () => {
+      //@ts-ignore
       const { Map } = (await google.maps.importLibrary('maps')) as google.maps.MapsLibrary;
-      const { AdvancedMarkerElement } = (await google.maps.importLibrary(
-        'marker'
-      )) as google.maps.MarkerLibrary;
 
       map = new Map(document.getElementById('map') as HTMLElement, {
         center: { lat: 14.5964947, lng: 120.9883602 },
         zoom: 12,
         maxZoom: 15,
         minZoom: 11,
-        mapId: MAP_ID,
+        mapId: data.MAP_ID,
         mapTypeControl: false,
         disableDefaultUI: true
       });
 
-      const datasetLayer = map.getDatasetFeatureLayer(BARANGAYS_DATASET_ID);
+      const datasetLayer = map.getDatasetFeatureLayer(data.BARANGAYS_DATASET_ID);
       datasetLayer.style = setStyle;
       datasetLayer.addListener('click', handleClick);
 
@@ -162,7 +165,7 @@
 <div class="flex h-full flex-col bg-zinc-900">
   <script
     async
-    src={`https://maps.googleapis.com/maps/api/js?key=${MAPS_API_KEY}&callback=initMap&v=beta`}></script>
+    src={`https://maps.googleapis.com/maps/api/js?key=${data.MAPS_API_KEY}&callback=initMap&v=beta`}></script>
   <div class="flex">
     <h1 class="text-white">landvalue.ph</h1>
     <div>
