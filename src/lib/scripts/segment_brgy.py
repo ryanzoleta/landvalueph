@@ -80,6 +80,9 @@ with open("src/lib/data/barangays_values.csv", mode="r") as csv_file:
 all_values = []
 
 for brgy_id in brgy_data.keys():
+    if "value" not in brgy_data[brgy_id].keys():
+        brgy_data[brgy_id]["value"] = 0
+
     if (
         brgy_data[brgy_id]["value"] != 0
         and brgy_data[brgy_id]["value"] <= HIGH_THRESHOLD

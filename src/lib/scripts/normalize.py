@@ -62,8 +62,8 @@ for brgy in all_brgy:
         brgy_id = brgy["properties"]["ADM4_PCODE"]
         city = brgy["properties"]["ADM3_EN"]
 
-    if city in ["CALOOCAN CITY", "PASAY CITY"]:
-        continue
+    # if city in ["CALOOCAN CITY", "PASAY CITY"]:
+    #     continue
 
     normalized[brgy_id] = {}
 
@@ -101,6 +101,10 @@ for brgy in all_brgy:
         lat, lng = (14.598240, 120.985848)
     elif brgy_name == "ERMITA":
         lat, lng = (14.582367, 120.984626)
+    elif brgy_id == "PH137605076":
+        normalized[brgy_id]["name"] = "Bay City"
+    elif brgy_id == "PH137605183":
+        normalized[brgy_id]["name"] = "Villamor"
 
     normalized[brgy_id]["position"] = {"lat": lat, "lng": lng}
     normalized[brgy_id]["color"] = random_color()
