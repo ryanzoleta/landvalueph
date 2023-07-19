@@ -136,13 +136,31 @@
   <script
     async
     src={`https://maps.googleapis.com/maps/api/js?key=${data.MAPS_API_KEY}&callback=initMap&v=beta`}></script>
-  <div class="flex">
-    <h1 class="text-white">landvalue.ph</h1>
-    <div>
-      <select name="viewing" id="inputViewing" bind:value={localityLevel}>
+  <div class="flex place-content-between gap-3 px-5 py-3 text-white">
+    <div class="flex flex-1 gap-5">
+      <h1 class="text-2xl font-bold text-zinc-300">landvalue.ph</h1>
+      <p class="my-auto text-sm italic text-zinc-600">
+        Average property values (price per sqm) in greater metro manila area
+      </p>
+    </div>
+    <div class="flex gap-3 border-r border-zinc-700 px-3 text-lg">
+      <label for="inputViewing" class="m-auto font-bold text-zinc-400">View by</label>
+      <select
+        name="viewing"
+        id="inputViewing"
+        bind:value={localityLevel}
+        class="rounded-md bg-black px-3 text-zinc-400">
         <option value="city">City</option>
-        <option value="district">District</option>
+        <option value="district">Barangay</option>
       </select>
+    </div>
+    <div class="m-auto">
+      <p class=" text-zinc-500">
+        Source code on <a
+          href="https://github.com/ryanzoleta/landvalueph"
+          target="_blank"
+          class="text-zinc-500 underline">GitHub</a>
+      </p>
     </div>
   </div>
   <div id="map" class="h-full" />
